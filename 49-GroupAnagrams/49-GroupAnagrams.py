@@ -1,27 +1,23 @@
 class Solution(object):
     def groupAnagrams(self, strs):
-        dic = {}
-        for s in strs:
-            grouped = False
-            for key in dic.keys():
-                if len(s)!=len(key):
-                    continue
-                equivalent = True
-                for c in s:
-                    if s.count(c)==key.count(c):
-                        continue
-                    else:
-                        equivalent = False
-                        break
-                if equivalent:
-                    dic[key].append(s)
-                    grouped = True
-                    break
-            if not grouped:
-                dic[s] = [s]
-        # create final list
-        groups = []
-        for s in dic.keys():
-            groups.append(dic[s])
-        return groups
+        """
+        :type strs: List[str]
+        :rtype: List[List[str]]
+        """
         
+        group = defaultdict(list)       #imported
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+
+        for s in strs : 
+            count = [0] * 26    # [ a:0,0,0,.....,z:0]
+
+            for char in s : 
+                index = letters.index(char)     
+                count[index] +=1 
+
+            key = tuple(count)      # for cat : count -->  ( a1, 0 , c:1 , 0,0,0,0.....t:1,...z:0)  alphabets redundant
+            group[key].append(s)    # here they will group with key (#cat). will append with str only same
+
+        return list(group.values())     #
+            
+            
