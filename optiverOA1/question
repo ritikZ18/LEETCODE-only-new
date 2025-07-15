@@ -1,0 +1,125 @@
+Perfect — now that we have the **final expected output**, behavior, and code clarified, here's a **thorough and precise question** based on your `SquirrelResearch` class. This version can be used as a coding problem in interviews, assignments, or competitive platforms.
+
+---
+
+## 🐿️ Problem: Squirrel Nut Management System
+
+You are developing a simulation system called **SquirrelResearch** to help track how squirrels **store** and **retrieve** nuts in forest tree locations. Each **location** consists of a fixed number of **vertical levels** (similar to shelves), indexed from **bottom (0)** to **top (N-1)**.
+
+Each level can hold **multiple nuts**, but **only one nut can be placed per level** during the hiding operation. Nuts have:
+
+* A **unique ID**
+* A **weight**
+* A **time-to-expire**
+
+You must implement a class to support **nut hiding** and **nut retrieval** based on specific access rules.
+
+---
+
+### ✅ Nut Hiding Rules (`hide_nut`)
+
+You may **hide a nut** in a level if:
+
+1. The **nut ID is globally unique** (you cannot hide the same nut twice).
+2. The **location exists**.
+3. A nut can be hidden in **level `i`** only if:
+
+   * `i == 0`, or
+   * **All lower levels (0 to i−1)** are already non-empty.
+4. The nut is placed in the **first available level** that satisfies the above.
+5. Each level can hold **at most 1 nut**.
+
+Return `True` if the nut was successfully hidden, otherwise return `False`.
+
+---
+
+### 🔄 Nut Retrieval Rules (`retrieve_nut`)
+
+You may retrieve up to `max_squirrel_capacity_in_nuts` nuts from a location with the following rules:
+
+1. Retrieval proceeds from **topmost level to bottom**.
+2. If a level has **expired nuts**, they are discarded before retrieval.
+3. A **non-top** level can be accessed **only if the level above it has at least 1 valid nut** (i.e., ≥50% of its capacity, where capacity is 1).
+4. Within a level, nuts are retrieved in this order:
+
+   * **Lowest weight first**
+   * Break ties using lexicographical order of `nut_id`
+5. Once retrieved, nuts are removed from the system.
+
+Return a list of `nut_id`s retrieved (in the order picked).
+
+---
+
+### ⏳ Nut Expiry Rule
+
+A nut is considered **expired** at a timestamp `t` if:
+
+$$
+\text{{current timestamp}} > \text{{hide timestamp}} + \text{{time_to_expire}}
+$$
+
+Expired nuts are discarded from storage automatically during retrieval.
+
+---
+
+## 📘 Class API Specification
+
+```python
+class SquirrelResearch:
+    def __init__(self, locations: dict[str, int]) -> None: ...
+    
+    def hide_nut(self, timestamp: float, location_id: str, nut_id: str,
+                 nut_weight: float, time_to_expire: float) -> bool: ...
+    
+    def retrieve_nut(self, timestamp: float, location_id: str,
+                     max_squirrel_capacity_in_nuts: int) -> list[str]: ...
+```
+
+---
+
+## 💡 Example Test Case
+
+```python
+sr = SquirrelResearch({"OakHollow": 3, "PineNook": 1})
+
+print("HideNut=" + str(sr.hide_nut(100, "OakHollow", "nut1", 0.31, 600)))
+print("HideNut=" + str(sr.hide_nut(105, "OakHollow", "nut2", 0.40, 600)))
+print("HideNut=" + str(sr.hide_nut(110, "PineNook",  "nut3", 0.31, 600)))
+print("HideNut=" + str(sr.hide_nut(115, "OakHollow", "nut4", 0.53, 600)))
+print("HideNut=" + str(sr.hide_nut(120, "PineNook",  "nut5", 0.35, 600)))
+print("HideNut=" + str(sr.hide_nut(121, "OakHollow", "nut6", 0.35, 600)))
+
+print("RetrieveNut=" + str(sr.retrieve_nut(140, "PineNook", 3)))
+print("RetrieveNut=" + str(sr.retrieve_nut(145, "OakHollow", 5)))
+```
+
+---
+
+## ✅ Expected Output
+
+```
+HideNut=True
+HideNut=True
+HideNut=True
+HideNut=True
+HideNut=False
+HideNut=False
+RetrieveNut=['nut3']
+RetrieveNut=['nut4', 'nut2', 'nut1']
+```
+
+---
+
+## 🔒 Constraints
+
+* Each level holds **at most 1 nut**.
+* A location can have up to 100 levels.
+* Nut weights are floating point numbers `0 < weight ≤ 10`.
+* Nut IDs are globally unique strings.
+* All timestamps are strictly increasing.
+* No two nuts will be hidden at the same timestamp.
+* All time values are in the same units (e.g., seconds since epoch).
+
+---
+
+Would you like a version of this question exported in **PDF**, **markdown**, or **coding platform** format (like LeetCode/HackerRank)?
